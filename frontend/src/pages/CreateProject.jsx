@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import axios from 'axios'
+import { useNavigate } from "react-router-dom";
 
 export default function CreateProject() {
+  const navigate = useNavigate()
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -38,7 +40,9 @@ export default function CreateProject() {
     console.log(form);
 
     axios.post("http://localhost:3000/api/v1/project/create",form)
-    .then((res)=>console.log(res.data))
+    .then((res)=>{console.log(res.data)
+      navigate("/dashboard")
+    })
     .catch((e)=>console.log(e))
     
   };

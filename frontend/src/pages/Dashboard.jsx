@@ -1,9 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { Link, useNavigate } from "react-router-dom"
-
+import ProjectCard from "../components/ProjectCard";
+import axios from 'axios'
 export default function Dashboard() {
+  const [projects, setProjects] = useState([])
+
+  useEffect(() => {
+    axios.get("http://localhost:3000/api/v1/project/all-projects")
+      .then((res) => {
+        setProjects(res.data)
+        console.log(res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
+
   const navigate = useNavigate()
   return (
     <div className="min-h-screen bg-[#0f0a1f] text-white flex flex-col">
@@ -41,7 +55,7 @@ export default function Dashboard() {
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-6 mb-10">
-            <StatCard title="Active" value="4" subtitle="Live projects" />
+            <StatCard title="Active" value={projects.length} subtitle="Live projects" />
             <StatCard title="Urgent" value="7" subtitle="Tasks due this week" />
             <StatCard value="+1,200" subtitle="XP earned this week" />
           </div>
@@ -49,32 +63,11 @@ export default function Dashboard() {
 
           {/* Content Grid */}
           <div className="grid grid-cols-2 gap-8">
-
-            {/* Projects */}
-            <div className="bg-[#140d2c] p-6 rounded-xl">
-              <div className="flex justify-between mb-4">
-                <h3 className="text-lg font-semibold">My Projects</h3>
-                <button className="text-purple-400">View All</button>
-              </div>
-
-              <Project name="AI Research Portal" progress="75%" color="bg-purple-500" />
-              <Project name="Eco-Tracker App" progress="42%" color="bg-green-500" />
-              <Project name="Fintech API Wrapper" progress="90%" color="bg-blue-500" />
-
-            </div>
-
-
-            {/* Hackathons */}
-            <div className="bg-[#140d2c] p-6 rounded-xl space-y-4">
-              <h3 className="text-lg font-semibold mb-4">
-                Recommended Hackathons
-              </h3>
-
-              <Hackathon title="Global AI Challenge 2024" days="12" prize="$10,000 Prize" />
-              <Hackathon title="Web3 Builder Summit" days="03" prize="$5,000 Prize" />
-              <Hackathon title="Zero-Waste Hack" days="28" prize="Sponsorships" />
-
-            </div>
+            
+            {projects?.map((p,i)=>(
+              <ProjectCard key={i} project={p}/>
+            ))}
+            
 
           </div>
 
