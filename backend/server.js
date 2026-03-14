@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const mongoose = require("mongoose");
+const userRoutes = require("./routes/userRoutes")
 const port = 3000
 const cors = require("cors");
 app.use(cors({
@@ -14,6 +15,7 @@ mongoose.connect("mongodb://localhost:27017/studentPlatform")
 .catch(err=>console.log(err));
 
 app.use(express.json())
+app.use("/api/users", userRoutes)
 
 const projectRoutes = require("./routes/projectRouter")
 app.use("/api/v1/project", projectRoutes)
