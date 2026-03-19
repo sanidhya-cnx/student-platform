@@ -7,7 +7,7 @@ export default function CreateProject() {
   const [form, setForm] = useState({
     title: "",
     description: "",
-    skillsRequired: [],
+    requiredSkills: [],
     status: "open",
   });
 
@@ -22,16 +22,16 @@ export default function CreateProject() {
 
     setForm({
       ...form,
-      skillsRequired: [...form.skillsRequired, skillInput],
+      requiredSkills: [...form.requiredSkills, skillInput],
     });
 
     setSkillInput("");
   };
 
   const removeSkill = (index) => {
-    const updated = [...form.skillsRequired];
+    const updated = [...form.requiredSkills];
     updated.splice(index, 1);
-    setForm({ ...form, skillsRequired: updated });
+    setForm({ ...form, requiredSkills: updated });
   };
 
   const handleSubmit = (e) => {
@@ -39,7 +39,12 @@ export default function CreateProject() {
 
     console.log(form);
 
-    axios.post("http://localhost:3000/api/v1/project/create",form)
+    const token = localStorage.getItem("token");
+    axios.post("http://localhost:3000/api/projects/create", form, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     .then((res)=>{console.log(res.data)
       navigate("/dashboard")
     })
@@ -105,7 +110,7 @@ export default function CreateProject() {
 
             {/* Skills Tags */}
             <div className="flex flex-wrap gap-2 mt-3">
-              {form.skillsRequired.map((skill, index) => (
+              {form.requiredSkills.map((skill, index) => (
                 <span
                   key={index}
                   className="bg-purple-600/20 text-purple-400 px-3 py-1 rounded-full text-sm flex items-center gap-2"
@@ -135,7 +140,7 @@ export default function CreateProject() {
               className="w-full mt-2 bg-[#0f0b22] border border-purple-900/30 p-3 rounded-lg outline-none focus:border-purple-500"
             >
               <option value="open">Open</option>
-              <option value="closed">Closed</option>
+              <option value="completed">Completed</option>
               <option value="in-progress">In Progress</option>
             </select>
           </div>

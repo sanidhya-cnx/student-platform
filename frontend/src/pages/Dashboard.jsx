@@ -7,16 +7,29 @@ import axios from 'axios'
 export default function Dashboard() {
   const [projects, setProjects] = useState([])
 
-  useEffect(() => {
-    axios.get("http://localhost:3000/api/v1/project/all-projects")
-      .then((res) => {
-        setProjects(res.data)
-        console.log(res.data)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }, [])
+useEffect(() => {
+  const fetchProjects = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get(
+        "http://localhost:3000/api/projects/my-projects",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("Projects:", res.data); // ✅ check here
+      setProjects(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  fetchProjects();
+}, []);
 
   const navigate = useNavigate()
   return (
@@ -64,9 +77,9 @@ export default function Dashboard() {
           {/* Content Grid */}
           <div className="grid grid-cols-2 gap-8">
             
-            {projects?.map((p,i)=>(
-              <ProjectCard key={i} project={p}/>
-            ))}
+           {projects.map((p) => (
+                <ProjectCard key={p._id} project={p} />
+           ))}
             
 
           </div>
@@ -109,7 +122,7 @@ function Project({ name, progress, color }) {
         />
       </div>
     </div>
-  );
+  );              
 }
 
 function Hackathon({ title, days, prize }) {

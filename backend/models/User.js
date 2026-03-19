@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
 
     skills : [String],
 
-    projects : [String],
+    projects : [String],  // id of project from all projects 
 
     bio : {
         type: String,

@@ -2,6 +2,9 @@ const express = require('express')
 const app = express()
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/userRoutes")
+const projectRoutes = require("./routes/projectRoutes");
+
+
 const port = 3000
 const cors = require("cors");
 app.use(cors({
@@ -9,6 +12,7 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+app.use("/api/projects", projectRoutes);
 
 mongoose.connect("mongodb://localhost:27017/studentPlatform")
 .then(()=>console.log("MongoDB Connected"))
@@ -17,7 +21,7 @@ mongoose.connect("mongodb://localhost:27017/studentPlatform")
 app.use(express.json())
 app.use("/api/users", userRoutes)
 
-const projectRoutes = require("./routes/projectRouter")
+// const projectRoutes = require("./routes/projectRoutes")
 app.use("/api/v1/project", projectRoutes)
 
 app.get("/", (req, res) => {

@@ -22,6 +22,7 @@ function Login() {
       const token = res.data.token
 
       localStorage.setItem("token", token)
+      localStorage.setItem("userId", res.data.user._id)
 
       alert("Login successful")
 

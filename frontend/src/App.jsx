@@ -5,6 +5,7 @@ import CreateProject from "./pages/CreateProject"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
 import ProtectedRoute from "./components/ProtectedRoute"
+import ProjectDetails from "./pages/ProjectDetails.jsx";
 
 function App() {
 
@@ -42,8 +43,14 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route 
+        path="/project/:id" 
+        element={
+          <ProjectDetails />
+        } />
 
     </Routes>
+    
   )
 }
 

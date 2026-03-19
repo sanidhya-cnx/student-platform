@@ -1,30 +1,39 @@
 const Project = require("../models/Project");
-const User = require("../models/User");
 
-exports.createProject = async (req, res) => {
+// Create Project
+const createProject = async (req, res) => {
   try {
+    const { title, description, techStack, requiredSkills, status } = req.body;
 
-    const project = new Project(req.body);
+    const newProject = new Project({
+      title,
+      description,
+      techStack,
+      requiredSkills,
+      status,
+      createdBy: req.userId, 
+    });
 
-    const savedProject = await project.save();
+    await newProject.save();
 
-    res.status(201).json(savedProject);
-
+    res.status(201).json(newProject);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.log(error);
+    res.status(500).json({ message: "Server Error" });
   }
 };
 
-exports.getAllProjects = async (req, res) => {
+// Get All Projects
+const getAllProjects = async (req, res) => {
   try {
-
-    const projects = await Project.find()
-      .populate("creator")
-      .populate("teamMembers");
-
+    const projects = await Project.find();
     res.json(projects);
-
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Server Error" });
   }
-}
+};
+
+module.exports = {
+  createProject,
+  getAllProjects,
+};
