@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-export default function ProjectCard({ project }) {
+export default function ProjectCard({ project, joinRequest }) {
   const navigate = useNavigate();
 
   const userId = localStorage.getItem("userId");
@@ -15,7 +15,7 @@ export default function ProjectCard({ project }) {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        `http://localhost:3000/api/projects/join/${projectId}`,
+        `http://localhost:3000/api/projects/join-request/${projectId}`,
         {},
         {
           headers: {
@@ -24,7 +24,8 @@ export default function ProjectCard({ project }) {
         }
       );
 
-      navigate(`/workspace/${projectId}`);
+      // Reload to fetch the new request and show "Pending Approval"
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
@@ -84,12 +85,20 @@ export default function ProjectCard({ project }) {
   >
     Leave Project
   </button>
+) : joinRequest && joinRequest.status === "pending" ? (
+  <button
+    disabled
+    onClick={(e) => { e.stopPropagation(); }}
+    className="mt-6 bg-gray-600 cursor-not-allowed py-2 rounded-lg text-sm font-medium opacity-70"
+  >
+    Pending Approval
+  </button>
 ) : (
   <button
     onClick={(e) => { e.stopPropagation(); handleJoin(project._id); }}
     className="mt-6 bg-linear-to-r from-purple-600 to-purple-500 py-2 rounded-lg text-sm font-medium hover:opacity-90"
   >
-    Apply to Join
+    {joinRequest && joinRequest.status === "rejected" ? "Apply Again" : "Apply to Join"}
   </button>
 )}
     </div>

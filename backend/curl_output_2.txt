@@ -1,0 +1,27 @@
+* Host localhost:3000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:3000...
+* Connected to localhost (::1) port 3000
+> POST /api/projects/join-request/69b01f9dbb7e9678b39d4646 HTTP/1.1
+> Host: localhost:3000
+> User-Agent: curl/8.7.1
+> Accept: */*
+> Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YmNjMWIwOWNjNGVhNGIyYzc4NThiYSIsImlhdCI6MTc3NDAyODI4NH0.kbTuosbgbZ21jKRH47Xgpa-lTQkHIHXUnOPtkY8Y2gI
+> 
+* Request completely sent off
+< HTTP/1.1 500 Internal Server Error
+< X-Powered-By: Express
+< Access-Control-Allow-Origin: http://localhost:5173
+< Vary: Origin
+< Access-Control-Allow-Credentials: true
+< Content-Type: application/json; charset=utf-8
+< Content-Length: 26
+< ETag: W/"1a-TWd4P909aS7hmxw/rXTLAfOcAZc"
+< Date: Fri, 20 Mar 2026 17:38:04 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< 
+{ [26 bytes data]
+* Connection #0 to host localhost left intact
+{"message":"Server Error"}

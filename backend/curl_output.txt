@@ -1,0 +1,27 @@
+* Host localhost:3000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:3000...
+* Connected to localhost (::1) port 3000
+> POST /api/projects/join-request/69bd5050152f6161871a3f41 HTTP/1.1
+> Host: localhost:3000
+> User-Agent: curl/8.7.1
+> Accept: */*
+> Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWIxYzFiMmMzZDRlNWY2YTdiOGM5ZCIsImlhdCI6MTc3NDAyODIzNX0.jlpb_HdY18_xubcNpqiCVahZoP0w5k0-QTXMrcz8ODg
+> 
+* Request completely sent off
+< HTTP/1.1 201 Created
+< X-Powered-By: Express
+< Access-Control-Allow-Origin: http://localhost:5173
+< Vary: Origin
+< Access-Control-Allow-Credentials: true
+< Content-Type: application/json; charset=utf-8
+< Content-Length: 257
+< ETag: W/"101-Ue4jMGmoLcidDgQvv/cI4IoTw3Y"
+< Date: Fri, 20 Mar 2026 17:37:15 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< 
+{ [257 bytes data]
+* Connection #0 to host localhost left intact
+{"message":"Join request submitted","request":{"user":"65ab1c1b2c3d4e5f6a7b8c9d","project":"69bd5050152f6161871a3f41","status":"pending","_id":"69bd85cbb10edc51e936240e","createdAt":"2026-03-20T17:37:15.950Z","updatedAt":"2026-03-20T17:37:15.950Z","__v":0}}

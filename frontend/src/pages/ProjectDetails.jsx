@@ -7,22 +7,36 @@ export default function ProjectDetails() {
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [joinRequest, setJoinRequest] = useState(null);
 
   useEffect(() => {
-    const fetchProject = async () => {
+    const fetchProjectAndRequests = async () => {
       try {
+        const token = localStorage.getItem("token");
+
         const res = await axios.get(
           `http://localhost:3000/api/projects/all-projects`
         );
 
         const found = res.data.find((p) => p._id === id);
         setProject(found);
+
+        if (token && found) {
+          const resReq = await axios.get(
+            `http://localhost:3000/api/projects/my-join-requests`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          const req = resReq.data.find((r) => r.project === found._id);
+          setJoinRequest(req);
+        }
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchProject();
+    fetchProjectAndRequests();
   }, [id]);
 
   const userId = localStorage.getItem("userId");
@@ -36,7 +50,7 @@ export default function ProjectDetails() {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        `http://localhost:3000/api/projects/join/${project._id}`,
+        `http://localhost:3000/api/projects/join-request/${project._id}`,
         {},
         {
           headers: {
@@ -45,11 +59,11 @@ export default function ProjectDetails() {
         }
       );
 
-      // Successfully joined, redirect to discover or update UI
-      navigate("/discover");
+      // Successfully requested, reload to update UI
+      window.location.reload();
     } catch (error) {
       console.log(error);
-      alert("Error joining project");
+      alert("Error sending join request");
     }
   };
 
@@ -318,9 +332,15 @@ export default function ProjectDetails() {
 
                     <div className="mt-10 flex flex-col gap-4">
                        {(!isJoined && !isOwner) ? (
-                         <button onClick={handleJoin} className="w-full bg-[#00d885] hover:bg-teal-400 text-black font-black py-4 flex text-center justify-center rounded-lg transition tracking-widest text-[14px] items-center gap-2 shadow-[0_0_20px_rgba(0,216,133,0.4)] uppercase">
-                            <span>🚀</span> Join Project
-                         </button>
+                         joinRequest && joinRequest.status === "pending" ? (
+                           <button disabled className="w-full bg-gray-600 hover:bg-gray-600 text-gray-300 font-black py-4 flex text-center justify-center rounded-lg transition tracking-widest text-[14px] items-center gap-2 uppercase opacity-70 cursor-not-allowed shadow-none">
+                              <span>⏳</span> Pending Approval
+                           </button>
+                         ) : (
+                           <button onClick={handleJoin} className="w-full bg-[#00d885] hover:bg-teal-400 text-black font-black py-4 flex text-center justify-center rounded-lg transition tracking-widest text-[14px] items-center gap-2 shadow-[0_0_20px_rgba(0,216,133,0.4)] uppercase">
+                              <span>🚀</span> {joinRequest && joinRequest.status === "rejected" ? "Apply Again" : "Join Project"}
+                           </button>
+                         )
                        ) : (
                          <button onClick={handleLeaveClick} className="w-full bg-red-600/20 border border-red-500 hover:bg-red-600 hover:text-white text-red-500 font-bold py-4 flex text-center justify-center rounded-lg transition tracking-widest text-[14px] items-center gap-2 shadow-[0_0_15px_rgba(220,38,38,0.2)] uppercase">
                             <span>❌</span> Leave Project

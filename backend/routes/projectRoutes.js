@@ -2,7 +2,14 @@ const express = require("express");
 const router = express.Router();
 const { verifyToken } = require("../middleware/authMiddleware");
 const Project = require("../models/Project");
-const { createProject, getAllProjects } = require("../controllers/projectController");
+const { 
+  createProject, 
+  getAllProjects,
+  requestToJoinProject,
+  getProjectJoinRequests,
+  updateJoinRequestStatus,
+  getMyJoinRequests
+} = require("../controllers/projectController");
 
 // Create a new project
 router.post("/create", verifyToken, createProject);
@@ -24,6 +31,21 @@ router.get("/my-projects", verifyToken, async (req, res) => {
   }
 });
 
+// ====== Join Request Endpoints ======
+
+// 1. Submit a join request
+router.post("/join-request/:projectId", verifyToken, requestToJoinProject);
+
+// 2. Get all pending requests for a project (Admin)
+router.get("/join-requests/:projectId", verifyToken, getProjectJoinRequests);
+
+// 3. Update request status (Approve/Reject)
+router.patch("/join-request/:requestId", verifyToken, updateJoinRequestStatus);
+
+// 4. Get logged-in user's requests
+router.get("/my-join-requests", verifyToken, getMyJoinRequests);
+
+// (Deprecated) Direct join
 router.post("/join/:projectId", verifyToken, async (req, res) => {
   try {
     const project = await Project.findById(req.params.projectId);

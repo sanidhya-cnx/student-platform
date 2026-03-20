@@ -6,22 +6,40 @@ import ProjectCard from "../components/ProjectCard";
 
 export default function Discover() {
   const [projects, setProjects] = useState([]);
-  useEffect(() => {
-  const fetchProjects = async () => {
-    try {
-      const res = await axios.get(
-        "http://localhost:3000/api/projects/all-projects"
-      );
-      const userId = localStorage.getItem("userId");
-      const filtered = res.data.filter(p => p.createdBy !== userId && !p.teamMembers?.includes(userId));
-      setProjects(filtered);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [joinRequests, setJoinRequests] = useState([]);
 
-  fetchProjects();
-}, []);
+  useEffect(() => {
+    const fetchProjectsAndRequests = async () => {
+      try {
+        const userId = localStorage.getItem("userId");
+        const token = localStorage.getItem("token");
+
+        // Fetch projects
+        const resProjects = await axios.get(
+          "http://localhost:3000/api/projects/all-projects"
+        );
+        const filtered = resProjects.data.filter(
+          (p) => p.createdBy !== userId && !p.teamMembers?.includes(userId)
+        );
+        setProjects(filtered);
+
+        // Fetch join requests
+        if (token) {
+          const resRequests = await axios.get(
+            "http://localhost:3000/api/projects/my-join-requests",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          setJoinRequests(resRequests.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchProjectsAndRequests();
+  }, []);
   return (
     <div className="min-h-screen bg-linear-to-b from-[#0b0b1a] to-[#120a1f] text-white">
       {/* Navbar */}
@@ -31,9 +49,10 @@ export default function Discover() {
         <h2 className="text-2xl font-bold mt-14 mb-6">Explore Projects</h2>
 
         <div className="grid md:grid-cols-4 gap-6">
-          {projects.map((p, i) => (
-            <ProjectCard key={i} project={p} />
-          ))}
+          {projects.map((p, i) => {
+            const request = joinRequests.find((r) => r.project === p._id);
+            return <ProjectCard key={i} project={p} joinRequest={request} />;
+          })}
         </div>
 
         <div className="flex justify-center mt-10">

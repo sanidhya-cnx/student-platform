@@ -7,6 +7,8 @@ export default function ProjectWorkspace() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
+  const [showJoinRequests, setShowJoinRequests] = useState(false);
+  const [joinRequests, setJoinRequests] = useState([]);
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -20,12 +22,79 @@ export default function ProjectWorkspace() {
     };
     fetchProject();
   }, [id]);
+
+  const userId = localStorage.getItem("userId");
+  const isOwner = project?.createdBy === userId;
+
+  const fetchJoinRequests = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(`http://localhost:3000/api/projects/join-requests/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setJoinRequests(res.data);
+      setShowJoinRequests(true);
+    } catch (error) {
+      console.log(error);
+      alert("Error fetching join requests");
+    }
+  };
+
+  const handleRequestAction = async (requestId, status) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.patch(`http://localhost:3000/api/projects/join-request/${requestId}`, { status }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setJoinRequests(joinRequests.filter(r => r._id !== requestId));
+      if (status === "approved") {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error);
+      alert(`Error updating request to ${status}`);
+    }
+  };
   return (
     <div className="min-h-screen text-white bg-[#0f0a1f] relative overflow-hidden">
 
       {/* Background Glow */}
-      <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-purple-600 opacity-20 blur-[200px] rounded-full"></div>
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-500 opacity-20 blur-[200px] rounded-full"></div>
+      <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-purple-600 opacity-20 blur-[200px] rounded-full pointer-events-none"></div>
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-500 opacity-20 blur-[200px] rounded-full pointer-events-none"></div>
+
+      {/* Join Requests Modal */}
+      {showJoinRequests && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="bg-[#110e1b] border border-purple-900/50 rounded-2xl p-8 max-w-lg w-full shadow-[0_0_40px_rgba(88,28,135,0.4)] relative">
+             <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-white">Join Requests</h2>
+                <button onClick={() => setShowJoinRequests(false)} className="text-gray-400 hover:text-white text-xl">✕</button>
+             </div>
+             
+             <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                {joinRequests.length === 0 ? (
+                  <p className="text-gray-400 text-center py-8">No pending requests.</p>
+                ) : (
+                  joinRequests.map(req => (
+                    <div key={req._id} className="bg-[#1a1238] border border-gray-800 rounded-xl p-4 flex items-center justify-between">
+                       <div className="flex items-center gap-4">
+                          <img src={req.user?.profilePic || "https://i.pravatar.cc/150?img=11"} alt={req.user?.name || "User"} className="w-10 h-10 rounded-full object-cover" />
+                          <div>
+                             <p className="text-white font-medium text-sm">{req.user?.name || "Unknown User"}</p>
+                             <p className="text-gray-400 text-xs">{req.user?.email || "No email"}</p>
+                          </div>
+                       </div>
+                       <div className="flex gap-2">
+                          <button onClick={() => handleRequestAction(req._id, "approved")} className="bg-green-600/20 text-green-500 hover:bg-green-600 hover:text-white px-3 py-1.5 rounded text-xs font-semibold transition">Approve</button>
+                          <button onClick={() => handleRequestAction(req._id, "rejected")} className="bg-red-600/20 text-red-500 hover:bg-red-600 hover:text-white px-3 py-1.5 rounded text-xs font-semibold transition">Reject</button>
+                       </div>
+                    </div>
+                  ))
+                )}
+             </div>
+          </div>
+        </div>
+      )}
 
 
       {/* NAVBAR */}
@@ -104,9 +173,11 @@ export default function ProjectWorkspace() {
 
             </div>
 
-            <button className="bg-[#1a1238] border border-purple-900/40 px-4 py-2 rounded-lg hover:border-purple-500 transition">
-              Invite Team
-            </button>
+            {isOwner && (
+              <button onClick={fetchJoinRequests} className="bg-[#1a1238] border border-purple-900/40 px-4 py-2 rounded-lg hover:border-purple-500 transition">
+                Join Requests
+              </button>
+            )}
 
             <button 
               onClick={() => navigate(`/project/${id}`)}
