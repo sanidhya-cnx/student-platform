@@ -7,6 +7,7 @@ function Login() {
 
   const [email,setEmail] = useState("")
   const [password,setPassword] = useState("")
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
 
@@ -24,14 +25,12 @@ function Login() {
       localStorage.setItem("token", token)
       localStorage.setItem("userId", res.data.user._id)
 
-      alert("Login successful")
-
       navigate("/dashboard")
 
     }catch(err){
 
       console.log(err)
-      alert("Invalid credentials")
+      setError("Invalid credentials. Please try again.")
 
     }
 
@@ -53,6 +52,8 @@ function Login() {
 
         <form onSubmit={handleSubmit}
          className="space-y-5">
+
+          {error && <div className="text-red-400 bg-red-900/20 border border-red-500/50 px-4 py-2 rounded text-sm text-center">{error}</div>}
 
           <div>
             <label className="text-gray-400 text-sm">Email Address</label>

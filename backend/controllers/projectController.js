@@ -11,7 +11,7 @@ const createProject = async (req, res) => {
       techStack,
       requiredSkills,
       status,
-      createdBy: req.userId, 
+      createdBy: req.userId,
     });
 
     await newProject.save();
@@ -32,6 +32,8 @@ const getAllProjects = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+
 
 module.exports = {
   createProject,

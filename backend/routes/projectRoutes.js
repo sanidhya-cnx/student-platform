@@ -6,6 +6,8 @@ const { createProject, getAllProjects } = require("../controllers/projectControl
 
 // Create a new project
 router.post("/create", verifyToken, createProject);
+// get all projects
+router.get("/all-projects", getAllProjects);
 
 // Get logged-in user's projects
 router.get("/my-projects", verifyToken, async (req, res) => {
@@ -25,7 +27,6 @@ router.get("/my-projects", verifyToken, async (req, res) => {
 router.post("/join/:projectId", verifyToken, async (req, res) => {
   try {
     const project = await Project.findById(req.params.projectId);
-
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
@@ -35,15 +36,18 @@ router.post("/join/:projectId", verifyToken, async (req, res) => {
       return res.status(400).json({ message: "Already joined" });
     }
 
-    project.teamMembers.push(req.userId);
-    await project.save();
+    const updatedProject = await Project.findByIdAndUpdate(
+      req.params.projectId,
+      { $addToSet: { teamMembers: req.userId } },
+      { new: true }
+    );
 
-    res.status(200).json({ message: "Joined successfully", project });
+    res.status(200).json({ message: "Joined successfully", project: updatedProject });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
 });
-router.get("/all-projects", getAllProjects);
+
 
 // leave project
 router.post("/leave/:projectId", verifyToken, async (req, res) => {
@@ -54,12 +58,18 @@ router.post("/leave/:projectId", verifyToken, async (req, res) => {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    // Remove user from teamMembers
-    project.teamMembers = project.teamMembers.filter(
-      (id) => id.toString() !== req.userId
-    );
+    // If the creator leaves, delete the project entirely
+    if (project.createdBy && project.createdBy.toString() === req.userId) {
+      await Project.findByIdAndDelete(req.params.projectId);
+      return res.status(200).json({ message: "Project deleted successfully by owner" });
+    }
 
-    await project.save();
+    // Remove user from teamMembers using $pull to avoid validation crashes
+    await Project.findByIdAndUpdate(
+      req.params.projectId,
+      { $pull: { teamMembers: req.userId } },
+      { new: true }
+    );
 
     res.status(200).json({ message: "Left project successfully" });
   } catch (error) {

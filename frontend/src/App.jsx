@@ -6,6 +6,7 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 import ProtectedRoute from "./components/ProtectedRoute"
 import ProjectDetails from "./pages/ProjectDetails.jsx";
+import ProjectWorkspace from "./pages/ProjectWorkspace.jsx";
 
 function App() {
 
@@ -47,6 +48,11 @@ function App() {
         path="/project/:id" 
         element={
           <ProjectDetails />
+        } />
+      <Route 
+        path="/workspace/:id" 
+        element={
+          <ProjectWorkspace />
         } />
 
     </Routes>

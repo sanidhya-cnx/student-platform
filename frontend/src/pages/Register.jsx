@@ -11,13 +11,14 @@ function Register(){
   const [password,setPassword] = useState("")
   const [confirmPassword,setConfirmPassword] = useState("")
   const [role,setRole] = useState("Frontend")
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
 
     e.preventDefault()
 
     if(password !== confirmPassword){
-      alert("Passwords do not match")
+      setError("Passwords do not match")
       return
     }
 
@@ -28,14 +29,12 @@ function Register(){
         { name, email, password }
       )
 
-      alert("Registration successful")
-
       navigate("/login")
 
     }catch(err){
 
       console.log(err)
-      alert("Registration failed")
+      setError(err.response?.data?.message || "Registration failed. Please try again.")
 
     }
 
@@ -58,6 +57,8 @@ function Register(){
 
         <form onSubmit={handleSubmit}
          className="space-y-5">
+         
+         {error && <div className="text-red-400 bg-red-900/20 border border-red-500/50 px-4 py-2 rounded text-sm text-center">{error}</div>}
 
           <input
             type="text"

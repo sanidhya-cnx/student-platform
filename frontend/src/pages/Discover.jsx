@@ -12,7 +12,9 @@ export default function Discover() {
       const res = await axios.get(
         "http://localhost:3000/api/projects/all-projects"
       );
-      setProjects(res.data);
+      const userId = localStorage.getItem("userId");
+      const filtered = res.data.filter(p => p.createdBy !== userId && !p.teamMembers?.includes(userId));
+      setProjects(filtered);
     } catch (error) {
       console.log(error);
     }

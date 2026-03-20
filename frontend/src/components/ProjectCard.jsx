@@ -24,10 +24,9 @@ export default function ProjectCard({ project }) {
         }
       );
 
-      alert("Joined Successfully");
+      navigate(`/workspace/${projectId}`);
     } catch (error) {
       console.log(error);
-      alert("Error joining project");
     }
   };
 
@@ -45,15 +44,20 @@ export default function ProjectCard({ project }) {
       }
     );
 
-    alert("Left Project");
+    window.location.reload();
   } catch (error) {
     console.log(error);
-    alert("Error leaving project");
   }
 };
   
   return (
-    <div onClick={() => navigate(`/project/${project._id}`)} className="bg-[#121224] cursor-pointer border border-purple-900/30 rounded-xl p-6 flex flex-col justify-between hover:border-purple-500 transition">
+    <div onClick={() => {
+      if (isJoined || isOwner) {
+        navigate(`/workspace/${project._id}`);
+      } else {
+        navigate(`/project/${project._id}`);
+      }
+    }} className="bg-[#121224] cursor-pointer border border-purple-900/30 rounded-xl p-6 flex flex-col justify-between hover:border-purple-500 transition">
       <div>
         {isOwner ? (
             <Tag text="Owner" />
@@ -64,7 +68,7 @@ export default function ProjectCard({ project }) {
         )}
         <h3 className="text-lg font-semibold mt-3">{project.title}</h3>
 
-        <p className="text-gray-400 text-sm mt-2">{project.description}</p>
+        <p className="text-gray-400 text-sm mt-2 line-clamp-2">{project.description}</p>
 
         <div className="flex flex-wrap gap-2 mt-4">
           {project.requiredSkills?.map((skill, i) => (
