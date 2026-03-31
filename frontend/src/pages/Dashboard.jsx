@@ -59,7 +59,7 @@ export default function Dashboard() {
           {/* Nav Links */}
           <nav className="flex flex-col gap-1 px-4">
              <SidebarItem icon={<GridIcon/>} label="Dashboard" active />
-             <SidebarItem icon={<RocketIcon/>} label="My Projects" onClick={() => navigate("/discover")} />
+             <SidebarItem icon={<RocketIcon/>} label="Discover" onClick={() => navigate("/discover")} />
              <SidebarItem icon={<BookIcon/>} label="Learning Paths" />
              <SidebarItem icon={<UsersIcon/>} label="Team Hub" />
              <SidebarItem icon={<CogIcon/>} label="Settings" />
