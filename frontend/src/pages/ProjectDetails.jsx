@@ -123,20 +123,13 @@ export default function ProjectDetails() {
           </div>
 
           <nav className="flex gap-8 text-sm font-medium text-gray-400">
+            <a onClick={() => navigate("/dashboard")} className="hover:text-white transition cursor-pointer">Dashboard</a>
             <a onClick={() => navigate("/discover")} className="hover:text-white transition cursor-pointer">Discover</a>
-            <a className="text-white border-b-2 border-purple-500 pb-1 cursor-pointer">Projects</a>
-            <a className="hover:text-white transition cursor-pointer">Workspace</a>
+            <a className="text-white border-b-2 border-purple-500 pb-1 cursor-pointer">Project</a>
           </nav>
         </div>
 
         <div className="flex items-center gap-6">
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs">🔍</span>
-            <input
-              placeholder="Search projects..."
-              className="bg-[#110e1b] border border-gray-800 px-4 py-2 pl-9 rounded-md outline-none text-sm w-64 focus:border-purple-600 transition"
-            />
-          </div>
           <div className="text-gray-400 hover:text-white cursor-pointer transition">🔔</div>
           <div className="text-gray-400 hover:text-white cursor-pointer transition">💬</div>
           <div className="w-8 h-8 rounded-full bg-gray-600 overflow-hidden">
@@ -198,10 +191,6 @@ export default function ProjectDetails() {
                  <span className="text-white drop-shadow-lg">{firstWord}</span>
                  {restOfTitle && <span className="text-[#8b31ff] drop-shadow-lg">{restOfTitle}</span>}
               </h1>
-
-              <p className="text-xl md:text-2xl text-gray-300 max-w-2xl leading-relaxed mt-4 font-normal drop-shadow-md">
-                 Optimizing the fabric of multi-cloud compute through entropic task distribution and zero-latency orchestration.
-              </p>
            </div>
            
            {/* Split Grid */}
@@ -300,7 +289,7 @@ export default function ProjectDetails() {
                        <div className="flex justify-between items-center group">
                           <div>
                             <p className="text-[10px] text-gray-500 tracking-[0.2em] mb-1.5 uppercase font-bold">TIMELINE</p>
-                            <p className="text-white font-medium text-[15px]">Dec 15, 2024</p>
+                            <p className="text-white font-medium text-[15px]">{project.timeline || "Not Specified"}</p>
                           </div>
                           <span className="text-gray-500 group-hover:text-purple-400 transition" style={{fontSize: '20px'}}>📅</span>
                        </div>
@@ -309,19 +298,9 @@ export default function ProjectDetails() {
 
                        <div className="flex justify-between items-center group">
                           <div>
-                            <p className="text-[10px] text-gray-500 tracking-[0.2em] mb-1.5 uppercase font-bold">DIFFICULTY</p>
-                            <p className="text-white font-medium text-[15px]">Expert Level</p>
-                          </div>
-                          <span className="text-gray-500 group-hover:text-purple-400 transition" style={{fontSize: '20px'}}>📈</span>
-                       </div>
-
-                       <div className="w-full h-[1px] bg-gray-800/80"></div>
-
-                       <div className="flex justify-between items-center group">
-                          <div>
                             <p className="text-[10px] text-gray-500 tracking-[0.2em] mb-1.5 uppercase font-bold">OPEN ROLES</p>
                             <p className="text-white font-medium text-[15px] flex items-center gap-2">
-                               {Math.max(1, 4 - (project.teamMembers?.length || 0))} slots available
+                               {Math.max(0, (project.roles || 1) - (project.teamMembers?.length || 0))} slots available
                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
                             </p>
                           </div>

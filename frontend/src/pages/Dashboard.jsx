@@ -43,11 +43,17 @@ export default function Dashboard() {
       <aside className="w-[260px] bg-[#110e1b]/95 border-r border-gray-800 backdrop-blur-md z-10 flex flex-col justify-between py-6 shrink-0 relative shadow-2xl">
         <div>
           {/* Logo */}
-          <div className="px-6 mb-10 flex items-center gap-3 cursor-pointer" onClick={() => navigate("/dashboard")}>
+          <div className="px-6 mb-8 flex items-center gap-3 cursor-pointer" onClick={() => navigate("/dashboard")}>
              <div className="bg-purple-600 rounded p-1.5 flex items-center justify-center">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
              </div>
              <span className="text-[17px] font-black tracking-widest leading-none">NEON <span className="font-light">NEBULA</span></span>
+          </div>
+
+          {/* Email Section */}
+          <div className="px-6 mb-8">
+            <div className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-1">Signed In As</div>
+            <div className="text-[13px] text-gray-300 truncate">{user ? user.email : "Loading..."}</div>
           </div>
 
           {/* Nav Links */}
