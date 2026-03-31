@@ -1,10 +1,11 @@
+require('dotenv').config();
 const mongoose = require("mongoose");
 const Project = require("./models/Project");
 const ProjectJoinRequest = require("./models/ProjectJoinRequest");
 
 async function test() {
   try {
-    await mongoose.connect("mongodb://localhost:27017/studentPlatform");
+    await mongoose.connect(process.env.MONGODB_URI);
     const project = await Project.findOne();
     if(!project) { console.log("No project"); return; }
     
