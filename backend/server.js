@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express')
 const http = require('http')
 const { Server } = require('socket.io')
@@ -44,7 +45,7 @@ app.use((req, res, next) => {
   req.io = io;
   next();
 });
-mongoose.connect("mongodb://localhost:27017/studentPlatform")
+mongoose.connect(process.env.MONGODB_URI)
 .then(()=>console.log("MongoDB Connected"))
 .catch(err=>console.log(err));
 
