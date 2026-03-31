@@ -1,14 +1,16 @@
+import { Link } from "react-router-dom";
+
 export default function Navbar(){
     return(
         <header className="h-16 flex items-center justify-between px-8 border-b border-purple-900">
         
         <div className="flex items-center gap-10">
-          <h1 className="text-xl font-bold text-purple-400">CollabHub</h1>
+          <Link to="/dashboard" className="text-xl font-bold text-purple-400 cursor-pointer">CollabHub</Link>
 
           <nav className="flex gap-6 text-gray-300">
-            <a className="hover:text-white cursor-pointer">Marketplace</a>
-            <a className="hover:text-white cursor-pointer">Workspace</a>
-            <a className="hover:text-white cursor-pointer">Community</a>
+            <Link to="/dashboard" className="hover:text-white cursor-pointer">Dashboard</Link>
+            <Link to="/discover" className="hover:text-white cursor-pointer">Discover</Link>
+            <a className="hover:text-white cursor-pointer">Project</a>
           </nav>
         </div>
 
